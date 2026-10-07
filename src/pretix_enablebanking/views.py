@@ -293,8 +293,15 @@ class EnableBankingCallbackView(OrganizerDetailViewMixin, OrganizerPermissionReq
         for acct in session.get('accounts', []):
             logger.debug('Enable Banking account data: %s', acct)
             uid = acct.get('uid', '')
+
+            account_id = acct.get('account_id', {})
+            if not account_id:
+                logging.debug('Skipping account with empty account_id: %s', acct)
+                continue
+
             iban = acct.get('account_id', {}).get('iban') or ''
             if not uid or not iban:
+                logging.debug('Skipping account with missing uid or iban: %s', acct)
                 continue
 
             EnableBankingAccount.objects.update_or_create(
