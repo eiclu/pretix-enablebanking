@@ -123,11 +123,16 @@ class EnableBankingSettingsView(OrganizerDetailViewMixin, OrganizerPermissionReq
         mcv_str = request.POST.get('maximum_consent_validity', '')
         maximum_consent_validity = int(mcv_str) if mcv_str.isdigit() else None
 
+        psu_type = request.POST.get('psu_type', '')
+        if psu_type not in ('personal', 'business'):
+            psu_type = 'personal'
+
         try:
             auth_data = client.create_auth(
                 aspsp_name, aspsp_country,
                 redirect_url=callback_url,
                 maximum_consent_validity=maximum_consent_validity,
+                psu_type=psu_type,
             )
 
         except Exception as e:
